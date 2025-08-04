@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>学生管理システム - 大学教務課</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- アプリケーションヘッダー -->
+    <header class="app-header">
+        <div class="header-content">
+            <div class="header-title">
+                <h1>学生管理システム</h1>
+                <span class="subtitle">教務課</span>
+            </div>
+            <div class="header-stats">
+                <div class="stat-item">
+                    <span class="stat-label">全学生</span>
+                    <span class="stat-value" id="totalStudents">0</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-label">表示中</span>
+                    <span class="stat-value" id="visibleStudents">0</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-label">選択中</span>
+                    <span class="stat-value" id="selectedCount">0</span>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- メインアプリケーション領域 -->
+    <main class="app-main">
+        <!-- 学生コレクション表示領域 -->
+        <section class="students-workspace">
+            <!-- フィルターパネル -->
+            <aside class="filter-panel">
+                <div class="panel-header">
+                    <h2>学生を絞り込む</h2>
+                    <button class="clear-filters" id="clearFilters">
+                        <span>全てクリア</span>
+                    </button>
+                </div>
+                
+                <div class="filter-groups">
+                    <!-- 基本情報フィルター -->
+                    <div class="filter-group">
+                        <h3>基本情報</h3>
+                        <div class="filter-controls">
+                            <div class="filter-item">
+                                <label>氏名・フリガナ</label>
+                                <input type="text" id="nameFilter" placeholder="部分一致で検索">
+                            </div>
+                            <div class="filter-item">
+                                <label>学籍番号</label>
+                                <input type="text" id="studentIdFilter" placeholder="完全一致">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 所属フィルター -->
+                    <div class="filter-group">
+                        <h3>所属</h3>
+                        <div class="filter-controls">
+                            <div class="filter-item">
+                                <label>学部</label>
+                                <select id="facultyFilter">
+                                    <option value="">全学部</option>
+                                </select>
+                            </div>
+                            <div class="filter-item">
+                                <label>学科</label>
+                                <select id="departmentFilter">
+                                    <option value="">全学科</option>
+                                </select>
+                            </div>
+                            <div class="filter-item">
+                                <label>学年</label>
+                                <select id="gradeFilter">
+                                    <option value="">全学年</option>
+                                    <option value="1">1年</option>
+                                    <option value="2">2年</option>
+                                    <option value="3">3年</option>
+                                    <option value="4">4年</option>
+                                    <option value="5">5年以上</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- ステータスフィルター -->
+                    <div class="filter-group">
+                        <h3>在籍状況</h3>
+                        <div class="filter-controls">
+                            <div class="status-checkboxes">
+                                <label class="checkbox-item">
+                                    <input type="checkbox" value="在学" checked>
+                                    <span class="status-badge status-enrolled">在学</span>
+                                </label>
+                                <label class="checkbox-item">
+                                    <input type="checkbox" value="休学" checked>
+                                    <span class="status-badge status-leave">休学</span>
+                                </label>
+                                <label class="checkbox-item">
+                                    <input type="checkbox" value="卒業" checked>
+                                    <span class="status-badge status-graduated">卒業</span>
+                                </label>
+                                <label class="checkbox-item">
+                                    <input type="checkbox" value="退学">
+                                    <span class="status-badge status-withdrawn">退学</span>
+                                </label>
+                                <label class="checkbox-item">
+                                    <input type="checkbox" value="除籍">
+                                    <span class="status-badge status-expelled">除籍</span>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 保存済みフィルター -->
+                <div class="saved-filters">
+                    <h3>保存済みフィルター</h3>
+                    <div class="saved-filter-controls">
+                        <select id="savedFilters">
+                            <option value="">選択してください</option>
+                        </select>
+                        <div class="filter-actions">
+                            <button class="btn-icon" id="loadSavedFilter" title="読み込み">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-5l-2-3H5a2 2 0 00-2 2z"></path>
+                                </svg>
+                            </button>
+                            <button class="btn-icon" id="saveCurrentFilter" title="現在の条件を保存">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="M19 21H5a2 2 0 01-2-2V5a2 2 0 012-2h11l5 5v11a2 2 0 01-2 2z"></path>
+                                    <polyline points="17,21 17,13 7,13 7,21"></polyline>
+                                    <polyline points="7,3 7,8 15,8"></polyline>
+                                </svg>
+                            </button>
+                            <button class="btn-icon" id="deleteSavedFilter" title="削除">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <polyline points="3,6 5,6 21,6"></polyline>
+                                    <path d="m19,6v14a2,2 0 01-2,2H7a2,2 0 01-2-2V6m3,0V4a2,2 0 012-2h4a2,2 0 012,2v2"></path>
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </aside>
+
+            <!-- 学生一覧表示エリア -->
+            <div class="students-area">
+                <!-- ツールバー -->
+                <div class="students-toolbar">
+                    <div class="view-controls">
+                        <button class="view-toggle active" data-view="grid" title="グリッド表示">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <rect x="3" y="3" width="7" height="7"></rect>
+                                <rect x="14" y="3" width="7" height="7"></rect>
+                                <rect x="14" y="14" width="7" height="7"></rect>
+                                <rect x="3" y="14" width="7" height="7"></rect>
+                            </svg>
+                        </button>
+                        <button class="view-toggle" data-view="list" title="リスト表示">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <line x1="8" y1="6" x2="21" y2="6"></line>
+                                <line x1="8" y1="12" x2="21" y2="12"></line>
+                                <line x1="8" y1="18" x2="21" y2="18"></line>
+                                <line x1="3" y1="6" x2="3.01" y2="6"></line>
+                                <line x1="3" y1="12" x2="3.01" y2="12"></line>
+                                <line x1="3" y1="18" x2="3.01" y2="18"></line>
+                            </svg>
+                        </button>
+                    </div>
+                    
+                    <div class="sort-controls">
+                        <label>並び順:</label>
+                        <select id="sortBy">
+                            <option value="name">氏名順</option>
+                            <option value="studentId">学籍番号順</option>
+                            <option value="faculty">学部順</option>
+                            <option value="grade">学年順</option>
+                            <option value="lastUpdate">更新日順</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- 学生コレクション -->
+                <div class="students-collection" id="studentsCollection">
+                    <!-- 学生カードがここに動的に生成される -->
+                </div>
+            </div>
+        </section>
+
+        <!-- 選択された学生の詳細表示パネル -->
+        <aside class="student-detail-panel" id="detailPanel">
+            <div class="detail-placeholder">
+                <div class="placeholder-content">
+                    <svg width="80" height="80" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1">
+                        <path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"></path>
+                        <circle cx="12" cy="7" r="4"></circle>
+                    </svg>
+                    <h3>学生を選択してください</h3>
+                    <p>左側の一覧から学生をクリックすると<br>詳細情報が表示されます</p>
+                </div>
+            </div>
+            
+            <div class="detail-content" id="detailContent" style="display: none;">
+                <!-- 学生詳細ヘッダー -->
+                <div class="detail-header">
+                    <button class="close-detail" id="closeDetail">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <line x1="18" y1="6" x2="6" y2="18"></line>
+                            <line x1="6" y1="6" x2="18" y2="18"></line>
+                        </svg>
+                    </button>
+                    <div class="student-summary">
+                        <div class="student-avatar">
+                            <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"></path>
+                                <circle cx="12" cy="7" r="4"></circle>
+                            </svg>
+                        </div>
+                        <div class="student-info">
+                            <h2 id="detailStudentName">-</h2>
+                            <div class="student-meta">
+                                <span id="detailStudentId">-</span>
+                                <span class="status-badge" id="detailStatus">-</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 詳細情報タブ -->
+                <div class="detail-tabs">
+                    <button class="tab-button active" data-tab="basic">基本情報</button>
+                    <button class="tab-button" data-tab="academic">学務情報</button>
+                    <button class="tab-button" data-tab="history">学籍異動履歴</button>
+                    <button class="tab-button" data-tab="contact">連絡先</button>
+                </div>
+
+                <!-- タブコンテンツ -->
+                <div class="tab-content">
+                    <!-- 基本情報タブ -->
+                    <div class="tab-pane active" id="basicTab">
+                        <div class="info-sections">
+                            <div class="info-section">
+                                <h4>個人情報</h4>
+                                <div class="info-grid">
+                                    <div class="info-item">
+                                        <label>氏名</label>
+                                        <span id="basicName">-</span>
+                                    </div>
+                                    <div class="info-item">
+                                        <label>フリガナ</label>
+                                        <span id="basicKana">-</span>
+                                    </div>
+                                    <div class="info-item">
+                                        <label>英字氏名</label>
+                                        <span id="basicEnglish">-</span>
+                                    </div>
+                                    <div class="info-item">
+                                        <label>生年月日</label>
+                                        <span id="basicBirthDate">-</span>
+                                    </div>
+                                    <div class="info-item">
+                                        <label>性別</label>
+                                        <span id="basicGender">-</span>
+                                    </div>
+                                    <div class="info-item">
+                                        <label>国籍</label>
+                                        <span id="basicNationality">-</span>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="info-section">
+                                <h4>連絡先</h4>
+                                <div class="info-grid">
+                                    <div class="info-item full-width">
+                                        <label>現住所</label>
+                                        <span id="basicAddress">-</span>
+                                    </div>
+                                    <div class="info-item">
+                                        <label>電話番号</label>
+                                        <span id="basicPhone">-</span>
+                                    </div>
+                                    <div class="info-item">
+                                        <label>メールアドレス</label>
+                                        <span id="basicEmail">-</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 学務情報タブ -->
+                    <div class="tab-pane" id="academicTab">
+                        <div class="info-sections">
+                            <div class="info-section">
+                                <h4>在籍情報</h4>
+                                <div class="info-grid">
+                                    <div class="info-item">
+                                        <label>学籍番号</label>
+                                        <span id="academicStudentId">-</span>
+                                    </div>
+                                    <div class="info-item">
+                                        <label>入学年度</label>
+                                        <span id="academicEnrollmentYear">-</span>
+                                    </div>
+                                    <div class="info-item">
+                                        <label>学部</label>
+                                        <span id="academicFaculty">-</span>
+                                    </div>
+                                    <div class="info-item">
+                                        <label>学科</label>
+                                        <span id="academicDepartment">-</span>
+                                    </div>
+                                    <div class="info-item">
+                                        <label>学年</label>
+                                        <span id="academicGrade">-</span>
+                                    </div>
+                                    <div class="info-item">
+                                        <label>在籍状況</label>
+                                        <span class="status-badge" id="academicStatus">-</span>
+                                    </div>
+                                    <div class="info-item">
+                                        <label>入学種別</label>
+                                        <span id="academicEnrollmentType">-</span>
+                                    </div>
+                                    <div class="info-item">
+                                        <label>学籍更新日</label>
+                                        <span id="academicLastUpdate">-</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 学籍異動履歴タブ -->
+                    <div class="tab-pane" id="historyTab">
+                        <div class="history-timeline" id="historyTimeline">
+                            <!-- 履歴項目が動的に生成される -->
+                        </div>
+                    </div>
+
+                    <!-- 連絡先タブ -->
+                    <div class="tab-pane" id="contactTab">
+                        <div class="info-sections">
+                            <div class="info-section">
+                                <h4>緊急連絡先</h4>
+                                <div class="contact-list" id="emergencyContacts">
+                                    <!-- 連絡先が動的に生成される -->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </aside>
+    </main>
+
+    <!-- モーダルダイアログ -->
+    <div class="modal-overlay" id="saveFilterModal">
+        <div class="modal">
+            <div class="modal-header">
+                <h3>フィルターを保存</h3>
+                <button class="modal-close">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <line x1="18" y1="6" x2="6" y2="18"></line>
+                        <line x1="6" y1="6" x2="18" y2="18"></line>
+                    </svg>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label for="filterName">フィルター名</label>
+                    <input type="text" id="filterName" placeholder="例: 経済学部3年生">
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn-secondary" id="cancelSave">キャンセル</button>
+                <button class="btn-primary" id="confirmSave">保存</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>

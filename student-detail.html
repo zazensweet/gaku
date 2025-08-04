@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>学生詳細情報 - 学生情報検索システム</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300;400;500;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <header class="header">
+        <h1>学生情報検索システム</h1>
+        <div class="user-info">
+            <span id="currentUser">教務課職員</span>
+        </div>
+    </header>
+
+    <div class="detail-container">
+        <a href="index.html" class="back-button">
+            ← 検索画面に戻る
+        </a>
+
+        <section class="detail-section">
+            <h2>基本情報</h2>
+            <div class="detail-grid">
+                <div class="detail-item">
+                    <span class="detail-label">Uryu ID</span>
+                    <span class="detail-value" id="uryuId">-</span>
+                </div>
+                <div class="detail-item">
+                    <span class="detail-label">学籍番号（最新）</span>
+                    <span class="detail-value" id="studentId">-</span>
+                </div>
+                <div class="detail-item">
+                    <span class="detail-label">氏名</span>
+                    <span class="detail-value" id="name">-</span>
+                </div>
+                <div class="detail-item">
+                    <span class="detail-label">カナ氏名</span>
+                    <span class="detail-value" id="kanaName">-</span>
+                </div>
+                <div class="detail-item">
+                    <span class="detail-label">英語氏名</span>
+                    <span class="detail-value" id="englishName">-</span>
+                </div>
+                <div class="detail-item">
+                    <span class="detail-label">入学日</span>
+                    <span class="detail-value" id="enrollmentDate">-</span>
+                </div>
+                <div class="detail-item">
+                    <span class="detail-label">所属</span>
+                    <span class="detail-value" id="affiliation">-</span>
+                </div>
+                <div class="detail-item">
+                    <span class="detail-label">最新ステータス</span>
+                    <span class="detail-value" id="status">-</span>
+                </div>
+            </div>
+
+            <h3 style="margin-top: 2rem; margin-bottom: 1rem; padding-top: 1.5rem; border-top: 1px solid var(--border-color);">住所情報</h3>
+            <div class="detail-grid">
+                <div class="detail-item">
+                    <span class="detail-label">郵便番号</span>
+                    <span class="detail-value" id="postalCode">-</span>
+                </div>
+                <div class="detail-item">
+                    <span class="detail-label">住所都道府県</span>
+                    <span class="detail-value" id="prefecture">-</span>
+                </div>
+                <div class="detail-item">
+                    <span class="detail-label">住所1（市区町村）</span>
+                    <span class="detail-value" id="city">-</span>
+                </div>
+                <div class="detail-item">
+                    <span class="detail-label">住所2（番地）</span>
+                    <span class="detail-value" id="address1">-</span>
+                </div>
+                <div class="detail-item">
+                    <span class="detail-label">住所3（建物名・部屋番号）</span>
+                    <span class="detail-value" id="address2">-</span>
+                </div>
+                <div class="detail-item">
+                    <span class="detail-label">電話番号</span>
+                    <span class="detail-value" id="phone">-</span>
+                </div>
+                <div class="detail-item">
+                    <span class="detail-label">メールアドレス</span>
+                    <span class="detail-value" id="email">-</span>
+                </div>
+            </div>
+        </section>
+
+        <section class="detail-section">
+            <h2>連絡先情報</h2>
+            <div id="contactInfo">
+                <div class="detail-grid">
+                    <div class="detail-item">
+                        <span class="detail-label">Uryu ID</span>
+                        <span class="detail-value" id="contactUryuId">-</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-label">氏名</span>
+                        <span class="detail-value" id="contactName">-</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-label">カナ氏名</span>
+                        <span class="detail-value" id="contactKanaName">-</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-label">英語氏名</span>
+                        <span class="detail-value" id="contactEnglishName">-</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-label">間柄</span>
+                        <span class="detail-value" id="relationship">-</span>
+                    </div>
+                </div>
+
+                <h3 style="margin-top: 1.5rem; margin-bottom: 1rem;">住所情報</h3>
+                <div class="detail-grid">
+                    <div class="detail-item">
+                        <span class="detail-label">郵便番号</span>
+                        <span class="detail-value" id="contactPostalCode">-</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-label">住所都道府県</span>
+                        <span class="detail-value" id="contactPrefecture">-</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-label">住所1（市区町村）</span>
+                        <span class="detail-value" id="contactCity">-</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-label">住所2（番地）</span>
+                        <span class="detail-value" id="contactAddress1">-</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-label">住所3（建物名・部屋番号）</span>
+                        <span class="detail-value" id="contactAddress2">-</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-label">電話番号</span>
+                        <span class="detail-value" id="contactPhone">-</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-label">メールアドレス</span>
+                        <span class="detail-value" id="contactEmail">-</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="detail-section">
+            <h2>学籍異動履歴</h2>
+            <table class="history-table">
+                <thead>
+                    <tr>
+                        <th>学籍異動種別</th>
+                        <th>ステータス</th>
+                        <th>申請日</th>
+                        <th>承認日</th>
+                        <th>適用日</th>
+                    </tr>
+                </thead>
+                <tbody id="historyBody">
+                    <tr>
+                        <td colspan="5" style="text-align: center; color: var(--text-secondary); padding: 1rem;">
+                            履歴データを読み込み中...
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+    </div>
+
+    <script src="student-detail.js"></script>
+</body>
+</html>

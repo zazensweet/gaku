@@ -1,0 +1,21 @@
+{
+  "name": "student-information-system",
+  "version": "1.0.0",
+  "description": "学生情報検索システム",
+  "main": "index.html",
+  "scripts": {
+    "start": "http-server -p 8000",
+    "dev": "http-server -p 8000 -o"
+  },
+  "keywords": [
+    "student",
+    "information",
+    "search",
+    "management"
+  ],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "http-server": "^14.1.1"
+  }
+}
